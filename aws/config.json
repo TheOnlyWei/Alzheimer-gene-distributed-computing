@@ -1,0 +1,21 @@
+[
+  {
+    "Classification": "spark-env",
+    "Configurations": [
+      {
+        "Classification": "export",
+        "Properties": {
+          "PYSPARK_PYTHON": "python3",
+          "PYTHONHASHSEED": "0",
+          "SPARK_YARN_USER_ENV": "PYTHONHASHSEED=0"
+        }
+      }
+    ]
+  },
+  {
+    "Classification": "spark-defaults",
+    "Properties": {
+      "spark.dynamicAllocation.enabled": "false"
+    }
+  }
+]
