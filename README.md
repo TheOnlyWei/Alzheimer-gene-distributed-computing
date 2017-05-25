@@ -10,9 +10,9 @@ Alzheimer's Disease versus those who are not.
 
 ## Top-K T-test Scores
 This section explains how to run the top_k.py module to calculate top-k
-t-test scores between clusters of Entrez IDs that produce the largest 
+t-test scores between clusters of Entrez IDs that produce the largest
 t-test score magnitudes between two means of patients labeled with
-Alzheimer's Disease and those who don't have any cognitive impairment.
+Alzheimer's Disease (AD) and those with no cognitive impairment (NCI).
 
 The calculations for student t-test use population standard deviation. Project
 report is ```doc/report.pdf```.
@@ -62,7 +62,7 @@ http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html
   ```
   The above command outputs JSON format of your cluster ID, which is used for
   different things related to your AWS EMR cluster, such as:
-  
+
   - Describing cluster details:
   aws emr describe-cluster --cluster-id j-35C7A973OSSRQ
 
@@ -84,11 +84,11 @@ Example:
   --use-default-roles
   ```
 
-The command above creates a cluster named "Alzheimer-gene-distributed-computing" 
+The command above creates a cluster named "Alzheimer-gene-distributed-computing"
 with 3 instances, 1 master instance and 2 core instances of type m3.xlarge, using key called
 "pandora-id_rsa", which is the key name I set up on AWS. The configuration
 file is given in local file path:
-  
+
   ```file:///home/hduser/Documents/spark/aws/config.json```
 
 **6**. Copy Rosmap and gene cluster files to master node.
@@ -100,7 +100,7 @@ file is given in local file path:
     <bucket URL>: the s3://... URL to your data file.
     <local URL>: the HDFS path to save your data (HDFS host header not required).
     ```
-    
+
   - If your files are in your local machine, do:
     ```
     scp -i <keypair> <local file> hadoop@<master node address>:~/<file to paste>
@@ -156,14 +156,14 @@ file is given in local file path:
   - Download FoxyProxy add-on for your web browser. You may have to search for
     it in your browser's add-on website.
   - Follow the instructions below to configure the FoxyProxy add-on:
-  
+
     http://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-connect-master-node-proxy.html
 
     A copy of FoxyProxy configuration file is in "aws/foxyproxy-settings.xml"
     for your convenience.
-    
+
   - SSH from the terminal, e.g.:
-  
+
     ```ssh -ND 8157 hadoop@ec2-34-224-26-209.compute-1.amazonaws.com```
 
   - Enter the address into your browser with the FoxyProxy add-on, e.g.:

@@ -9,8 +9,10 @@ Entrez IDs selected by t-test scores between samples of patients diagnosed with
 Alzheimer's Disease versus those who are not.
 
 TOP-K
-This section deals with how to run the main.py module to calculate top-k
-clusters of Entrez IDs that produce the largest t-test score magnitudes.
+This section explains how to run the top_k.py module to calculate top-k
+t-test scores between clusters of Entrez IDs that produce the largest
+t-test score magnitudes between two means of patients labeled with
+Alzheimer's Disease (AD) and those with no cognitive impairment (NCI).
 
 The calculations for student t-test use population standard deviation. Project
 report is "doc/report.pdf".
@@ -73,7 +75,7 @@ report is "doc/report.pdf".
 
   Example:
   aws emr create-cluster \
-  --name "Alzheimer-distributed-computing" \
+  --name "Alzheimer-gene-distributed-computing" \
   --release-label emr-5.5.0 \
   --applications Name=Spark Name=Hadoop \
   --ec2-attributes KeyName=pandora-id_rsa \
@@ -82,7 +84,8 @@ report is "doc/report.pdf".
   --configurations file:///home/hduser/Documents/spark/aws/config.json \
   --use-default-roles
 
-  The command above creates a cluster named "genex" with 3 instances, 1 master
+  The command above creates a cluster named
+  "Alzheimer-gene-distributed-computing" with 3 instances, 1 master
   instance and 2 core instances of type m3.xlarge, using key called
   "pandora-id_rsa", which is the key name I set up on AWS. The configuration
   file is given in local file path:
