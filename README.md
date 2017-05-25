@@ -1,6 +1,14 @@
 # Cognitive Impairment Diagnosis Spark Application
 #### by Wei Shi
 
+The Rosmap gene expression profile data file was not uploaded due to its size,
+you can find it here:
+https://www.synapse.org/#!Synapse:syn2580853/wiki/409853
+
+The gene cluster origin file is available in "csv/" folder, it is extracted and
+and transformed from BioGRID data available at:
+https://thebiogrid.org/download.php
+
 The detailed report is in ```doc/report.pdf```
 
 For diagnosing patients with or without Alzheimer's Disease, given their
@@ -41,33 +49,35 @@ http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html
 **5**. Create cluster:
   ```
   aws emr create-cluster \
-  --name <cluster_name> \
+  --name <1> \
   --release-label emr-5.5.0 \
   --applications Name=Spark Name=Hadoop \
-  --ec2-attributes KeyName=<ec2_key> \
+  --ec2-attributes KeyName=<2> \
   --instance-type m3.xlarge \
-  --instance-count <number_of_instances> \
-  --configurations <path_to_configurations> \
+  --instance-count <3> \
+  --configurations <4> \
   --use-default-roles
   ```
   ```
-  <cluster_name>: the name of your cluster.
-  <ec2_key>: the Ec2 key-pair created in step 2.
-  <path_to_your_configurations>: file path of your configuration JSON file. Can
-  be in local directory or on Amazon S3.
-  <number_of_instances>: number of machines or instances to set up.
-  <path_to_configurations>: configuration of Spark variables, you can use the
-  one provided in the "aws/" directory named "config.json", which has Spark's
-  dynamic allocation turned off and has PySpark use Python3.
+  <1>: the name of your cluster.
+  <2>: the Ec2 key-pair created in step 2.
+  <3>: number of machines or instances to set up.
+  <4>: configuration of Spark variables, you can use the one provided in
+  "aws/config.json", which has Spark's dynamic allocation turned off and has
+  PySpark use Python3.
   ```
   The above command outputs JSON format of your cluster ID, which is used for
   different things related to your AWS EMR cluster, such as:
 
   - Describing cluster details:
+  ```
   aws emr describe-cluster --cluster-id j-35C7A973OSSRQ
+  ```
 
   - Adding more machines to your cluster.
+  ```
   aws emr add-instance-groups --cluster-id j-35C7A973OSSRQ --instance-groups InstanceCount=1,InstanceGroupType=core,InstanceType=m3.xlarge
+  ```
 
 http://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-spark-launch.html
 
@@ -113,15 +123,16 @@ file is given in local file path:
     ```
 
 **7**. SSH into master node and run spark-submit.
-  spark-submit --deploy-mode cluster <spark_app> <rosmap> <gene_cluster> <k> <output>
-
-  IMPORTANT: all files must be on the master node (see step 6).
   ```
-  <spark_app>: the spark application.
-  <rosmap>: the Rosmap file.
-  <gene_cluster>: the gene cluster file.
-  <k>: the top-k t-score value of each cluster to select.
-  <output>: the output file. The first line is time elapsed to calculate top-k
+  spark-submit --deploy-mode cluster <1> <2> <3> <4> <5>
+  ```
+  **IMPORTANT**: all files must be on the master node (see step 6).
+  ```
+  <1>: the spark application.
+  <2>: input Rosmap file path.
+  <3>: input gene cluster file path.
+  <4>: input top-k t-score value of each cluster to select.
+  <5>: the output file. The first line is time elapsed to calculate top-k
   t-scores, and the rest have the schema:
   (clusterID, t-score, ad mean, nci mean, ad pop. std., nci pop. std.)
   ```
@@ -129,18 +140,19 @@ file is given in local file path:
 **8**. Add spark step **(OPTIONAL)**:
   ```
   aws emr add-steps \
-  --cluster-id j-<cluster_ID> \
-  --steps Type=spark,Name=MyApp,Args=[--deploy-mode,cluster,--conf,spark.yarn.submit.waitAppCompletion=false,s3://<bucket>/<spark_app>,s3://<bucket>/<rosmap>,s3://<bucket>/<gene_cluster>,<n>,s3://<bucket>/<rdd_output>/], \
+  --cluster-id j-<1> \
+  --steps Type=spark,Name=MyApp,Args=[--deploy-mode,cluster,--conf,spark.yarn.submit.waitAppCompletion=false,s3://<2>/<3>,s3://<2>/<4>,s3://<2>/<5>,<6>,s3://<2>/<7>/], \
   ActionOnFailure=CONTINUE
   ```
-    <cluster_ID>: id of your cluster received from step 3.
-    <bucket>: your Amazon s3 bucket.
-    <spark_app>: the spark application file name in your Amazon S3 bucket.
-    <rosmap>: the rosmap patient gene expression file.
-    <gene_cluster>: the gene cluster file.
-    <k>: top-k clusters of gene values with largest t-test scores.
-    <rdd_output>: output folder of resulting computations.
-
+  ```
+  <1>: id of your cluster received from step 3.
+  <2>: your Amazon s3 bucket.
+  <3>: the spark application file name in your Amazon S3 bucket.
+  <4>: the rosmap patient gene expression file.
+  <5>: the gene cluster file.
+  <6>: top-k clusters of gene values with largest t-test scores.
+  <7>: output folder of resulting computations.
+  ```
   http://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-spark-submit-step.html
 
 
@@ -170,7 +182,7 @@ file is given in local file path:
 
     ```http://ec2-34-224-26-209.compute-1.amazonaws.com:8088/cluster```
 
-## DIAGNOSIS (Machine Learning)
+## Diagnosis (Machine Learning)
 This part of the application diagnoses patients using top-k t-test score gene clusters
 from the top-k cluster part of this project as features using Gradient Boosted Trees
 (GBT). The workflow is:
@@ -216,7 +228,7 @@ from the top-k cluster part of this project as features using Gradient Boosted T
     0.0 means a prediction of no cognitive disease and 1.0 means the patient has
     been predicted to have Alzheimer's Disease.
   ```
-  IMPORTANT: schema of input file of patients gene expression profiles to
+  **IMPORTANT**: schema of input file of patients gene expression profiles to
     diagnose: (patient ID, g1, g2, g3, ...), where g1, g2, g3, ... are gene
     expression values for the corresponding Entrez ID column.
 
@@ -231,7 +243,7 @@ from the top-k cluster part of this project as features using Gradient Boosted T
   <3>: input integer number of tree iterations.
   ```
 
-**5**. Extract AD and NCI patients from Rosmap file for testing (OPTIONAL):
+**5**. Extract AD and NCI patients from Rosmap file for testing **(OPTIONAL)**:
   ```
   Usage: ad_nci_processor.py <1> <2> <3>
   ```

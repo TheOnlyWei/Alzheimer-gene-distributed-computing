@@ -1,6 +1,14 @@
 Cognitive Impairment Diagnosis Spark Application
 by Wei Shi
 
+The Rosmap gene expression profile data file was not uploaded due to its size,
+you can find it here:
+https://www.synapse.org/#!Synapse:syn2580853/wiki/409853
+
+The gene cluster origin file is available in "csv/" folder, it is extracted and
+and transformed from BioGRID data available at:
+https://thebiogrid.org/download.php
+
 The detailed report is in "doc/report.pdf"
 
 For diagnosing patients with or without Alzheimer's Disease, given their
@@ -109,31 +117,32 @@ report is "doc/report.pdf".
 
 
 7. SSH into master node and run spark-submit.
-  spark-submit --deploy-mode cluster <spark_app> <rosmap> <gene_cluster> <k> <output>
+  spark-submit --deploy-mode cluster <1> <2> <3> <4> <5>
 
-  IMPORTANT: all files must be on the master node (see step 6).
-  <spark_app>: the spark application.
-  <rosmap>: the Rosmap file.
-  <gene_cluster>: the gene cluster file.
-  <k>: the top-k t-score value of each cluster to select.
-  <output>: the output file. The first line is time elapsed to calculate top-k
-    t-scores, and the rest have the schema:
-    (clusterID, t-score, ad mean, nci mean, ad pop. std., nci pop. std.)
+  **IMPORTANT**: all files must be on the master node (see step 6).
 
+  <1>: the spark application.
+  <2>: input Rosmap file path.
+  <3>: input gene cluster file path.
+  <4>: input top-k t-score value of each cluster to select.
+  <5>: the output file. The first line is time elapsed to calculate top-k
+  t-scores, and the rest have the schema:
+  (clusterID, t-score, ad mean, nci mean, ad pop. std., nci pop. std.)
+  
 
 8. Add spark step (OPTIONAL):
   aws emr add-steps \
-  --cluster-id j-<cluster_ID> \
-  --steps Type=spark,Name=MyApp,Args=[--deploy-mode,cluster,--conf,spark.yarn.submit.waitAppCompletion=false,s3://<bucket>/<spark_app>,s3://<bucket>/<rosmap>,s3://<bucket>/<gene_cluster>,<n>,s3://<bucket>/<rdd_output>/], \
+  --cluster-id j-<1> \
+  --steps Type=spark,Name=MyApp,Args=[--deploy-mode,cluster,--conf,spark.yarn.submit.waitAppCompletion=false,s3://<2>/<3>,s3://<2>/<4>,s3://<2>/<5>,<6>,s3://<2>/<7>/], \
   ActionOnFailure=CONTINUE
 
-  <cluster_ID>: id of your cluster received from step 3.
-  <bucket>: your Amazon s3 bucket.
-  <spark_app>: the spark application file name in your Amazon S3 bucket.
-  <rosmap>: the rosmap patient gene expression file.
-  <gene_cluster>: the gene cluster file.
-  <k>: top-k clusters of gene values with largest t-test scores.
-  <rdd_output>: output folder of resulting computations.
+  <1>: id of your cluster received from step 3.
+  <2>: your Amazon s3 bucket.
+  <3>: the spark application file name in your Amazon S3 bucket.
+  <4>: the rosmap patient gene expression file.
+  <5>: the gene cluster file.
+  <6>: top-k clusters of gene values with largest t-test scores.
+  <7>: output folder of resulting computations.
 
   For more information, visit:
 
