@@ -196,7 +196,7 @@ from the top-k cluster part of this project as features using Gradient Boosted T
   convert the output to libSVM format.
 
   ```
-  Usage: to_libSVM.py <1> <2> <3> <4>
+  Usage: labeled_to_libSVM.py <1> <2> <3> <4>
   ```
   ```
   <1>: input Rosmap patient gene expression file.

@@ -128,7 +128,7 @@ report is "doc/report.pdf".
   <5>: the output file. The first line is time elapsed to calculate top-k
   t-scores, and the rest have the schema:
   (clusterID, t-score, ad mean, nci mean, ad pop. std., nci pop. std.)
-  
+
 
 8. Add spark step (OPTIONAL):
   aws emr add-steps \
@@ -186,7 +186,7 @@ the top-k cluster part of this project as features using Gradient Boosted Trees
   labeled_to_libSVM.py on the Rosmap file. This will automatically extra AD and NCI patients and
   convert the output to libSVM format.
 
-  Usage: to_libSVM.py <1> <2> <3> <4>
+  Usage: labeled_to_libSVM.py <1> <2> <3> <4>
   <1>: input Rosmap patient gene expression file.
   <2>: input gene cluster file.
   <3>: input top-k cluster feature file.
