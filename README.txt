@@ -47,8 +47,23 @@ report is "doc/report.pdf".
 
   http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html
 
+5. Create IAM group:
 
-5. Create cluster:
+  http://docs.aws.amazon.com/IAM/latest/UserGuide/id_groups_create.html
+
+6. Attach group policy:
+
+  http://docs.aws.amazon.com/IAM/latest/UserGuide/id_groups_manage_attach-policy.html
+
+  Policies required:
+  AmazonEC2FullAccess
+  AmazonElasticMapReduceFullAccess
+
+7. Create IAM user and add that user to group created in step 5:
+
+  http://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html
+
+8. Create cluster:
   aws emr create-cluster \
   --name <cluster_name> \
   --release-label emr-5.5.0 \
@@ -101,7 +116,7 @@ report is "doc/report.pdf".
     file:///home/hduser/Documents/spark/aws/config.json
 
 
-6. Copy Rosmap and gene cluster files to master node.
+9. Copy Rosmap and gene cluster files to master node.
   - If your files are in Amazon S3. SSH into AWS EMR master node and do:
     aws s3 cp <bucket URL> <master node local URL>
 
@@ -116,7 +131,7 @@ report is "doc/report.pdf".
     scp <local file> hadoop@<master node address>:~/<file to paste>
 
 
-7. SSH into master node and run spark-submit.
+10. SSH into master node and run spark-submit.
   spark-submit --deploy-mode cluster <1> <2> <3> <4> <5>
 
   **IMPORTANT**: all files must be on the master node (see step 6).
@@ -130,7 +145,7 @@ report is "doc/report.pdf".
   (clusterID, t-score, ad mean, nci mean, ad pop. std., nci pop. std.)
 
 
-8. Add spark step (OPTIONAL):
+11. Add spark step (OPTIONAL):
   aws emr add-steps \
   --cluster-id j-<1> \
   --steps Type=spark,Name=MyApp,Args=[--deploy-mode,cluster,--conf,spark.yarn.submit.waitAppCompletion=false,s3://<2>/<3>,s3://<2>/<4>,s3://<2>/<5>,<6>,s3://<2>/<7>/], \
@@ -149,13 +164,13 @@ report is "doc/report.pdf".
   http://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-spark-submit-step.html
 
 
-9. Terminate the cluster (OPTIONAL):
+12. Terminate the cluster (OPTIONAL):
   aws emr terminate-clusters --cluster-ids j-XXXXXXXXXXXX
 
   http://docs.aws.amazon.com/emr/latest/ManagementGuide/UsingEMR_TerminateJobFlow.html
 
 
-10. Access YARN web GUI through FoxyProxy (OPTIONAL):
+13. Access YARN web GUI through FoxyProxy (OPTIONAL):
   a. Download FoxyProxy add-on for your web browser. You may have to search for
     it in your browser's add-on website.
   b. Follow the instructions below to configure the FoxyProxy add-on:
